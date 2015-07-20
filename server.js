@@ -11,7 +11,11 @@ var express = require("express"),
 	db = require("./models/models"),
 	Comment = require("./models/models")
 
-mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/game");
+mongoose.connect(
+	process.env.MONGOLAB_URI ||
+	process.env.MONGOHQ_URL ||
+	"mongodb://localhost/game"
+);
 
 // serve js and css files from public folder
 app.use(express.static(__dirname + "/public"));
