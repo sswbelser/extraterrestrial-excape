@@ -11,10 +11,19 @@ body {
 	text-align: center;
 }
 
+#post-comment-button {
+	text-align: center;
+}
+
+#comment-p {
+	text-align: center;
+}
+
+#update-div {
+	text-align: center;
+}
+
 #leaderboard-wrap {
 	text-align: center;
 }
 
-#post-comment-button {
-	text-align: center;
-}
