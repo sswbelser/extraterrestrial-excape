@@ -1,12 +1,17 @@
 body {
-	padding-top: 50px;
+	padding-top: 51px;
+}
+
+#quintus {
+	padding: 1px;
+	border: 1px solid black;
 }
 
 #add-a-comment {
 	text-align: center;
 }
 
-#leaderboard-wrap{
+#leaderboard-wrap {
 	text-align: center;
 }
 
