@@ -31,7 +31,7 @@ app.get("/", function (req, res) {
 	res.sendFile(__dirname + "/public/index.html");
 });
 
-// AJAX functions
+// AJAX functions for comments
 app.get("/api/comments", function (req, res) {
 	db.Comment.find(function (err, allComments) {
 		if (err) {
@@ -57,6 +57,7 @@ app.get("/api/comments/:id", function (req, res) {
 
 app.post("/api/comments", function (req, res) {
 	var newComment = new db.Comment({
+		// USERNAME
 		comment: req.body.comment
 	});
 	newComment.save(function (err, savedComment) {
@@ -97,6 +98,45 @@ app.delete("/api/comments/:id", function (req, res) {
 			res.status(500).send(err);
 		} else {
 			res.json(deletedComment);
+		}
+	});
+});
+
+// AJAX functions for leaderboard
+app.get("/api/scores", function (req, res) {
+	db.Score.find(function (err, allScores) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(allScores);
+		}
+	});
+});
+
+app.get("/api/scores/:id", function (req, res) {
+	var targetId = req.params.id;
+	db.Score.findOne({_id: targetId}, function (err, foundScore) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(foundScore);
+		}
+	});
+});
+
+app.post("/api/scores", function (req, res) {
+	var newScore = new db.Score({
+		// USERNAME
+		score: req.body.score
+	});
+	newScore.save(function (err, savedScore) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(savedScore);
 		}
 	});
 });

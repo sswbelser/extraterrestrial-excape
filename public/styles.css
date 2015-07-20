@@ -23,7 +23,32 @@ body {
 	text-align: center;
 }
 
-#leaderboard-wrap {
+#leaderboard-title {
 	text-align: center;
 }
 
+#top-10-title {
+	text-align: center;
+}
+
+#score-li {
+	text-align: right;
+	list-style-type: none;
+}
+
+ol {
+    counter-reset: index;
+}
+
+ol li:nth-child(2n+0) {
+    counter-increment: index;
+    list-style: none;
+}
+
+ol li:nth-child(2n+0):before {
+    content: counter(index) ".";
+}
+
+ol li:nth-child(2n+0):before {
+    content: "";
+}

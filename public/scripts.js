@@ -91,6 +91,44 @@ $(function() {
 
 	commentController.setupView();
 
+	var scoreController = {
+
+		// compile score template
+		template: _.template($('#score-template').html()),
+
+		all: function() {
+			$.get('/api/scores', function(data) {
+				var allScores = data;
+				// iterate through allScores
+				_.each(allScores, function(score) {
+					// pass each score object through template and append to view
+					var $scoreHtml = $(scoreController.template(score));
+					$('#leaderboard-list').prepend($scoreHtml);
+				});
+			});
+		},
+
+		create: function(newScore) {
+			var scoreData = {score: newScore};
+			// send POST request to server to create new score
+			$.post('/api/comments', scoreData, function(data) {
+				// pass post object through template and prepend to view
+				var $scoreHtml = $(scoreController.template(data));
+				$('#leaderboard-list').prepend($scoreHtml);
+			});
+		},
+
+		// Add functionality connecting the create function to the completion of the level
+		setupView: function() {
+			// append existing to view
+			scoreController.all();
+		}
+	};
+
+	scoreController.setupView();
+
+
+
 	// GAME CODE
 	var Q = Quintus()
 	.include("Sprites, Scenes, Input, 2D, Touch, UI")

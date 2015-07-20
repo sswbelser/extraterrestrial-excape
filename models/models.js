@@ -1,12 +1,20 @@
 // Models.js
 
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+var mongoose = require("mongoose"),
+	Schema = mongoose.Schema;
 
 var CommentSchema = new Schema({
+	username: String,
 	comment: String
 });
 
-var Comment = mongoose.model("Comment", CommentSchema);
+var ScoreSchema = new Schema({
+	username: String,
+	score: Number
+});
+
+var Comment = mongoose.model("Comment", CommentSchema),
+	Score = mongoose.model("Score", ScoreSchema);
 
 module.exports.Comment = Comment;
+module.exports.Score = Score;
