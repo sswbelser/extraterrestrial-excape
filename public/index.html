@@ -2,7 +2,117 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>SBelser Platformer</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+    <!-- Custome style -->
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <!-- Navbar - fixed to top -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Website Details<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li style="text-align: center">Made by Sabastian Belser</li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="https://github.com/sswbelser">GitHub</a></li>
+                            <li><a href="https://twitter.com/sswbelser">Twitter</a></li>
+                            <li><a href="https://www.facebook.com/sswbelser">Facebook</a></li>
+                            <li><a href="https://www.linkedin.com/in/sabastianbelser">LinkedIn</a></li>
+                            <li><a href="http://www.rockheadandquarry.com/">Rockhead & Quarry, LLC</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navcollapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" role="button" aria-haspopup="true" aria-expanded="false">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="quintus_container" style="width: 960px; margin: 0px auto; position: relative;">
+        <canvas width="960" height="640" id="quintus" tabindex="0" style="height: 640px; width: 960px; position: relative; outline: 0px;">
+        </canvas>
+    </div>
+    
+    <div class="col-sm-5" id="comment-wrap">
+        <div class="row">
+            <form id="new-comment">
+                <div>
+                    <h4 id="add-a-comment">Add a comment</h4>
+                </div>
+                <textarea class="form-control" id="comment-text" rows="3" placeholder="Whaddaya think?" required></textarea>
+                <div id="post-comment-button">
+                    <input type="submit" class="btn btn-default" value="Post Comment">
+                </div>
+            </form>
+            <br>
+            <div id="comment-list"></div>
+        </div>
+    </div>
+    <div class="col-sm-2"></div>
+    <div class="col-sm-5" id="leaderboard-wrap">
+        <div class="row">
+            <div class="panel panel-primary">
+                <div class="panel-heading"
+                    <h3 class="panel-title" id="leaderboard-title">Leaderboard</h3>
+                </div>
+                <div class="panel-body"
+                    <ol type="1" id="leaderboard-list"></ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Underscore template -->
+    <script type="text/template" id="comment-template">
+        <div class="comment-container">
+            <div class="comment panel panel-success" id="comment-<%= _id %>" data-id="<%= _id %>">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Username</h3>
+                </div
+                <div class="panel-body">
+                    <span class="my-button-group">
+                    <button class="close right-side delete-comment" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <a class="edit-pencil" role="button" data-toggle="collapse" data-target="#update-<%= _id %>">
+                        <span class="glyphicon glyphicon-pencil edit"></span>
+                    </a>
+                    <br>
+                </span>
+                    <br>
+                    <p id="comment-p"><%= comment %></p>
+                    <br>
+                    <div class="collapse" id="update-<%= _id %>">
+                        <form class="form-inline update-comment">
+                            <textarea class="form-control updated-comment" rows="5" value="<%= comment %>" placeholder="Update game description"></textarea>
+                            <input type="submit" class="btn btn-danger" value="Submit update">
+                        </form>
+                    </div
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <!-- Quintus -->
     <script src='lib/quintus.js'></script>
     <script src='lib/quintus_sprites.js'></script>
     <script src='lib/quintus_scenes.js'></script>
@@ -11,12 +121,6 @@
     <script src='lib/quintus_2d.js'></script>
     <script src='lib/quintus_touch.js'></script>
     <script src='lib/quintus_ui.js'></script>
-
-    <!-- Custome style -->
-    <link rel="stylesheet" href="styles.css" />
-
-</head>
-<body style="background-color: white;">
 
     <!--jQuery-->
     <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
@@ -27,6 +131,7 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
+    <!-- Custom script -->
     <script src="scripts.js"></script>
 
 </body>

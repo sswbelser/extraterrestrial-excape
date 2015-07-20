@@ -1,3 +1,97 @@
+$(function() {
+
+	var commentController = {
+
+		// compile comment template
+		template: _.template($('#comment-template').html()),
+
+		all: function() {
+			$.get('/api/comments', function(data) {
+				var allComments = data;
+				// iterate through allComments
+				_.each(allComments, function(comment) {
+					// pass each comment object through template and append to view
+					var $commentHtml = $(commentController.template(comment));
+					$('#comment-list').prepend($commentHtml);
+				});
+				// add event-handlers to comments for updating/deleting
+				commentController.addEventHandlers();
+			});
+		},
+
+		create: function(newComment) {
+			var commentData = {comment: newComment};
+			// send COMMENT request to server to create new comment
+			$.post('/api/comments', commentData, function(data) {
+				// pass post object through template and prepend to view
+				var $commentHtml = $(commentController.template(data));
+				$('#comment-list').prepend($commentHtml);
+			});
+		},
+
+		update: function(commentId, updatedComment) {
+			// send PUT request to server to update comment
+			$.ajax({
+				type: 'PUT',
+				url: '/api/comments/' + commentId,
+				data: {
+					comment: updatedComment
+				},
+				success: function(data) {
+					// pass comment object through template and append to view
+					var $commentHtml = $(commentController.template(data));
+					$('#comment-' + commentId).replaceWith($commentHtml);
+				}
+			});
+		},
+    
+		delete: function(commentId) {
+			// send DELETE request to server to delete comment
+			$.ajax({
+				type: 'DELETE',
+				url: '/api/comments/' + commentId,
+				success: function(data) {
+					// remove deleted comment li from the view
+					$('#comment-' + commentId).remove();
+				}
+			});
+		},
+
+		// add event-handlers to comments for updating/deleting
+		addEventHandlers: function() {
+			$('#comment-list')
+			// for update: submit event on `.update-comment` form
+			.on('submit', '.update-comment', function(event) {
+				event.preventDefault();
+				var commentId = $(this).closest('.comment').attr('data-id');
+				var updatedComment = $(this).find('.updated-comment').val();
+				commentController.update(commentId, updatedComment);
+			})
+			// for delete: click event on `.delete-comment` button
+			.on('click', '.delete-comment', function(event) {
+				event.preventDefault();
+				var commentId = $(this).closest('.comment').attr('data-id');
+				commentController.delete(commentId);
+			});
+		},
+
+		setupView: function() {
+			// append existing posts to view
+			commentController.all();
+			// add event-handler to new-comment form
+			$('#new-comment').on('submit', function(event) {
+				event.preventDefault();
+				var commentText = $('#comment-text').val();
+				commentController.create(commentText);
+				// reset the form
+				$(this)[0].reset();
+			});
+		}
+	};
+
+	commentController.setupView();
+
+	// GAME CODE
 	var Q = Quintus()
 	.include("Sprites, Scenes, Input, 2D, Touch, UI")
 	.setup({
@@ -35,3 +129,6 @@
 		Q.sheet("tiles","tiles_map.png", { tilew: 70, tileh: 70});          
 		Q.stageScene("level1");
 	});
+	// END GAME CODE
+
+});

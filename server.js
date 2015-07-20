@@ -8,7 +8,8 @@ var express = require("express"),
 	mongoose = require("mongoose"),
 	cors = require("cors"),
 	session = require("express-session"),
-	db = require("./models/models");
+	db = require("./models/models"),
+	Comment = require("./models/models")
 
 mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/game");
 
@@ -26,5 +27,75 @@ app.get("/", function (req, res) {
 	res.sendFile(__dirname + "/public/index.html");
 });
 
-app.listen(process.env.PORT || 3000);
+// AJAX functions
+app.get("/api/comments", function (req, res) {
+	db.Comment.find(function (err, allComments) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(allComments);
+		}
+	});
+});
+
+app.get("/api/comments/:id", function (req, res) {
+	var targetId = req.params.id;
+	db.Comment.findOne({_id: targetId}, function (err, foundComment) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(foundComment);
+		}
+	});
+});
+
+app.post("/api/comments", function (req, res) {
+	var newComment = new db.Comment({
+		comment: req.body.comment
+	});
+	newComment.save(function (err, savedComment) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(savedComment);
+		}
+	});
+});
+
+app.put("/api/comments/:id", function (req, res) {
+	var targetId = req.params.id;
+	db.Comment.findOne({_id: targetId}, function (err, foundComment) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			foundComment.comment = req.body.comment;
+			foundComment.save(function (err, savedComment) {
+				if (err) {
+					console.log("Error: " + err);
+					res.status(500).send(err);
+				} else {
+					res.json(savedComment);
+				}
+			})
+		}
+	})
+});
+
+app.delete("/api/comments/:id", function (req, res) {
+	var targetId = req.params.id;
+	db.Comment.findOneAndRemove({_id: targetId}, function (err, deletedComment) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(deletedComment);
+		}
+	});
+});
+
 // Add Mongo Lab to Heroku
+app.listen(process.env.PORT || 3000);

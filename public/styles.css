@@ -1,0 +1,15 @@
+body {
+	padding-top: 50px;
+}
+
+#add-a-comment {
+	text-align: center;
+}
+
+#leaderboard-wrap{
+	text-align: center;
+}
+
+#post-comment-button {
+	text-align: center;
+}
