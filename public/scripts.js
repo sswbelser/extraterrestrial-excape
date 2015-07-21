@@ -118,8 +118,6 @@ $(function() {
 			});
 		},
 
-
-
 		// Add functionality connecting the create function to the completion of the level
 		setupView: function() {
 			// append existing to view
@@ -129,7 +127,14 @@ $(function() {
 
 	scoreController.setupView();
 
-
+	$("#signup-modal").on("submit", function(event) {
+		event.preventDefault();
+		var signUpData = {username: username, password: password}
+		$.post("/users", signUpData, function(data) {
+			// Hide login/sign up button
+			// Add username text and logout button
+		})
+	})
 
 	// GAME CODE
 	var Q = Quintus()
@@ -263,7 +268,7 @@ $(function() {
 		}
 	});
 
-	//setup level 1, @TODO make it so that it could be multiple levels?
+	//setup level 1
 	Q.scene("level1",function(stage) {
 		var background = new Q.TileLayer({dataAsset: "level1.tmx", layerIndex: 0, sheet: "tiles", tileW: 70, tileH: 70, type: Q.SPRITE_NONE });
 		stage.insert(background);
@@ -324,14 +329,14 @@ $(function() {
 			y: 0
 		}),statsContainer);
 
-		var timer = stage.insert(new Q.UI.Text({
+		var coins = stage.insert(new Q.UI.Text({
 			label: "Coins: 0",
 			color: "white",
 			x: 0,
 			y: 0
 		}),statsContainer);
 
-		var coins = stage.insert(new Q.UI.Text({ 
+		var timer = stage.insert(new Q.UI.Text({ 
 			label: "Seconds: 0",
 			color: "white",
 			x: 300,

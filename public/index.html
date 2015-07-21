@@ -37,10 +37,45 @@
                     </li>
                 </ul>
             </div>
-            <div class="collapse navbar-collapse" id="bs-example-navcollapse-1">
+            <div class="collapse navbar-collapse" method="POST" action="/">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#" role="button" aria-haspopup="true" aria-expanded="false">Login</a>
+                        <a data-toggle="modal" data-target="#signup-modal">Sign Up</a>
+                        <div class="modal fade" id="signup-modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <form id="signup-form" action="/users" method="POST">
+                                            <input type="text" name="username" class="form-control" placeholder="Username - Whatever you like" id="username-signup">
+                                            <br>
+                                            <input type="password" name="password" class="form-control" placeholder="Password - Minimum six characters" id="password-signup">
+                                            <hr>
+                                            <input type="submit" value="Sign Up" class="btn btn-success">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a data-toggle="modal" data-target="#login-modal">Login</a>
+                        <div class="modal fade" id="login-modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <form id="login-form" method="POST" action="/login">
+                                            <input type="text" name="username" class="form-control" placeholder="Username" id="email-login">
+                                            <br>
+                                            <input type="password" name="password" class="form-control" placeholder="Password" id="password-login">
+                                            <hr>
+                                            <input type="submit" value="Login" class="btn btn-success" id="modal-buttons">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>

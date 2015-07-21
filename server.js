@@ -9,7 +9,8 @@ var express = require("express"),
 	cors = require("cors"),
 	session = require("express-session"),
 	db = require("./models/models"),
-	Comment = require("./models/models")
+	Comment = require("./models/models"),
+	User = require("./models/user")
 
 mongoose.connect(
 	process.env.MONGOLAB_URI ||
@@ -30,6 +31,10 @@ app.use(cors());
 app.get("/", function (req, res) {
 	res.sendFile(__dirname + "/public/index.html");
 });
+
+app.get("/profile", function (req, res) {
+	res.sendFile(__dirname + "/public/profile.html");
+})
 
 // AJAX functions for comments
 app.get("/api/comments", function (req, res) {
@@ -139,6 +144,81 @@ app.post("/api/scores", function (req, res) {
 			res.json(savedScore);
 		}
 	});
+});
+
+// Login Stuff
+// set session options
+app.use(session({
+	saveUninitialized: true,
+	resave: true,
+	secret: 'NoLookieCookie',
+	cookie: { maxAge: 60000 }
+}));
+
+// middleware to manage sessions
+app.use('/', function (req, res, next) {
+  // saves userId in session for logged-in user
+  req.login = function (user) {
+    req.session.userId = user.id;
+  };
+
+  // finds user currently logged in based on `session.userId`
+  req.currentUser = function (callback) {
+    User.findOne({_id: req.session.userId}, function (err, user) {
+      req.user = user;
+      callback(null, user);
+    });
+  };
+
+  // destroy `session.userId` to log out user
+  req.logout = function () {
+    req.session.userId = null;
+    req.user = null;
+  };
+
+  next();
+});
+
+// signup route with placeholder response
+app.get('/signup', function (req, res) {
+  res.send('coming soon');
+});
+
+// user submits the signup form
+app.post('/users', function (req, res) {
+
+  // grab user data from params (req.body)
+  var newUser = req.body;
+
+  // create new user with secure password
+  User.createSecure(newUser.username, newUser.password, function (err, user) {
+    res.send(user);
+    res.redirect('/profile');
+  });
+});
+
+// user submits the login form
+app.post('/login', function (req, res) {
+
+  // grab user data from params (req.body)
+  var userData = req.body;
+
+  // call authenticate function to check if password user entered is correct
+  User.authenticate(userData.username, userData.password, function (err, user) {
+    // saves user id to session
+    req.login(user);
+
+    // redirect to user profile
+    res.redirect('/profile');
+  });
+});
+
+// user profile page
+app.get('/profile', function (req, res) {
+  // finds user currently logged in
+  req.currentUser(function (err, user) {
+    res.send('Welcome ' + user.username);
+  });
 });
 
 // Add Mongo Lab to Heroku
