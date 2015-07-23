@@ -182,7 +182,7 @@ app.get('/api/me', function (req, res) {
 });
 
 // user submits the signup form
-app.post('/users', function (req, res) {
+app.post('/api/users', function (req, res) {
 
   // create new user with secure password
   User.createSecure(req.body.username, req.body.password, function (err, user) {
@@ -217,7 +217,7 @@ app.get('/logout', function (req, res) {
 });
 
 // user submits the login form
-app.get('/users', function (req, res) {
+app.get('/api/users', function (req, res) {
 	User.find(function (err, foundUsers){
 	    res.json(foundUsers);
 	  });

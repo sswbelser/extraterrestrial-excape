@@ -183,7 +183,9 @@ $(function() {
 			}
 		}
 	});
+	// END jQuery Validate
 
+	// Login/sign up/logout functionality
 	var loggedOut = function () {
 		$("#login-name").text("");
 		$("#signup-login").removeClass("hidden");
@@ -199,8 +201,6 @@ $(function() {
 		url: '/api/me',
 		type: "GET",
 		success: function (data) {
-			console.log("--> this should be the logded in user:");
-			console.log(data);
 			if (data) {
 				$("#login-name").text(data.username);
 				loggedIn();
@@ -213,13 +213,36 @@ $(function() {
 		}
 	});
 
+	$("#signup-form").on("submit", function (event) {
+		event.preventDefault();
+		var newUserObj = {
+			username: $("#username-signup").val(),
+			password: $("#password").val()
+		}
+		$("#signup-modal").modal("hide");
+		$.ajax({
+			url: "/api/users",
+			type: "POST",
+			data: newUserObj,
+			success: function (data) {
+				$("#login-name").text(data.username);
+				loggedIn();
+				alert("You have logged in!");
+			},
+			error: function () {
+				console.log("Error, could not post new User!");
+			}
+		});
+
+	});
+
 	$("#login-form").on('submit', function (event) {
 		event.preventDefault();
 		var loginUserObj = {
 			username: $("#username-login").val(),
 			password: $("#password-login").val()
 		}
-
+		$("#login-modal").modal("hide");
 		$.ajax({
 			url: '/login',
 			type: "POST",
@@ -227,6 +250,7 @@ $(function() {
 			success: function (data) {
 				$("#login-name").text(data.username);
 				loggedIn();
+				alert("You have logged in!");
 			},
 			error: function () {
 				console.log("Error, could not log in");
@@ -241,13 +265,15 @@ $(function() {
 			type: 'GET',
 			success: function (data) {
 				loggedOut();
+				alert("You have logged out");
 			},
 			error: function () {
 			}
 		});
 	});
+	// END login/sign up/logout functionality
 
-	// GAME CODE
+	// Game Code
 	var Q = Quintus()
 	.include("Sprites, Scenes, Input, 2D, Touch, UI")
 	.setup({
@@ -489,6 +515,6 @@ $(function() {
 		Q.stageScene("level1");
 		Q.stageScene("gameStats",1);
 	});
-	// END GAME CODE
+	// END Game Code
 
 });
