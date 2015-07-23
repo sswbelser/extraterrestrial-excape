@@ -198,7 +198,7 @@ $(function() {
 	}
 
 	$.ajax({
-		url: '/api/me',
+		url: '/api/current',
 		type: "GET",
 		success: function (data) {
 			if (data) {
@@ -233,7 +233,6 @@ $(function() {
 				console.log("Error, could not post new User!");
 			}
 		});
-
 	});
 
 	$("#login-form").on('submit', function (event) {

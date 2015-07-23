@@ -5,9 +5,10 @@ var request = require("request"),
 	cheerio = require("cheerio");
 
 var baseUrl = "http://localhost:3000";
+var commentId;
 
 describe("Game Title", function() {
-	it("should be 'SBelser Platformer'", function() {
+	it("should be 'SBelser Platformer'", function(done) {
 		request(baseUrl, function(err, res, body) {
 			var $ = cheerio.load(body);
 			var title = $("title").text();
@@ -15,4 +16,13 @@ describe("Game Title", function() {
 			done();
 		});
 	});
+});
+
+describe('DELETE /api/comments/:id', function() {
+  it('should return statusCode 200', function(done) {
+    request.del(baseUrl + '/api/comments/' + commentId, function(error, response, body) {
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+  });
 });

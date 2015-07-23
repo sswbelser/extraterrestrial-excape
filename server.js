@@ -153,29 +153,28 @@ app.use(session({
 
 // middleware to manage sessions
 app.use('/', function (req, res, next) {
-  // saves userId in session for logged-in user
-  req.login = function (user) {
-    req.session.userId = user._id;
-  };
+	// saves userId in session for logged-in user
+	req.login = function (user) {
+		req.session.userId = user._id;
+	};
 
-  // finds user currently logged in based on `session.userId`
-  req.currentUser = function (callback) {
-    User.findOne({_id: req.session.userId}, function (err, user) {
-      req.user = user;
-      callback(null, user);
-    });
-  };
+	// finds user currently logged in based on `session.userId`
+	req.currentUser = function (callback) {
+		User.findOne({_id: req.session.userId}, function (err, user) {
+			req.user = user;
+			callback(null, user);
+		});
+	};
 
-  // destroy `session.userId` to log out user
-  req.logout = function () {
-    req.session.userId = null;
-    req.user = null;
-  };
-
-  next();
+	// destroy `session.userId` to log out user
+	req.logout = function () {
+		req.session.userId = null;
+		req.user = null;
+	};
+	next();
 });
 
-app.get('/api/me', function (req, res) {
+app.get('/api/current', function (req, res) {
 	User.findOne({_id: req.session.userId}).exec(function (err, user) {
 		res.json(user);
 	});
@@ -184,44 +183,43 @@ app.get('/api/me', function (req, res) {
 // user submits the signup form
 app.post('/api/users', function (req, res) {
 
-  // create new user with secure password
-  User.createSecure(req.body.username, req.body.password, function (err, user) {
-    req.login(user);
-    res.send(user);
-  });
+	// create new user with secure password
+	User.createSecure(req.body.username, req.body.password, function (err, user) {
+		req.login(user);
+		res.send(user);
+	});
 });
 
 // user submits the login form
 app.post('/login', function (req, res) {
 
-  // call authenticate function to check if password user entered is correct
-  User.authenticate(req.body.username, req.body.password, function (err, user) {
-    // saves user id to session
-    req.login(user);
-    res.json(user);
-  });
+	// call authenticate function to check if password user entered is correct
+	User.authenticate(req.body.username, req.body.password, function (err, user) {
+		// saves user id to session
+		req.login(user);
+		res.json(user);
+	});
 });
 
-// user profile page
-app.get('/profile', function (req, res) {
-  // finds user currently logged in
-  req.currentUser(function (err, user) {
-    res.send('Welcome');
-  });
-});
+// // user profile page
+// app.get('/profile', function (req, res) {
+// 	// finds user currently logged in
+// 	req.currentUser(function (err, user) {
+// 		res.send('Welcome');
+// 	});
+// });
 
 // log out user (destroy session)
 app.get('/logout', function (req, res) {
-  req.logout();
-  res.redirect('/');
+	req.logout();
+	res.redirect('/');
 });
 
 // user submits the login form
 app.get('/api/users', function (req, res) {
-	User.find(function (err, foundUsers){
-	    res.json(foundUsers);
-	  });
-
+	User.find(function (err, foundUsers) {
+		res.json(foundUsers);
+	});
 });
 
 app.listen(process.env.PORT || 3000);
