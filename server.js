@@ -32,10 +32,6 @@ app.get("/", function (req, res) {
 	res.sendFile(__dirname + "/public/index.html");
 });
 
-app.get("/profile", function (req, res) {
-	res.sendFile(__dirname + "/public/profile.html");
-})
-
 // AJAX functions for comments
 app.get("/api/comments", function (req, res) {
 	db.Comment.find(function (err, allComments) {
@@ -134,7 +130,7 @@ app.get("/api/scores/:id", function (req, res) {
 app.post("/api/scores", function (req, res) {
 	var newScore = new db.Score({
 		// USERNAME
-		score: req.body.score
+		time: req.body.time
 	});
 	newScore.save(function (err, savedScore) {
 		if (err) {
@@ -159,7 +155,7 @@ app.use(session({
 app.use('/', function (req, res, next) {
   // saves userId in session for logged-in user
   req.login = function (user) {
-    req.session.userId = user.id;
+    req.session.userId = user._id;
   };
 
   // finds user currently logged in based on `session.userId`
@@ -179,37 +175,30 @@ app.use('/', function (req, res, next) {
   next();
 });
 
-// signup route with placeholder response
-app.get('/signup', function (req, res) {
-  res.send('coming soon');
+app.get('/api/me', function (req, res) {
+	User.findOne({_id: req.session.userId}).exec(function (err, user) {
+		res.json(user);
+	});
 });
 
 // user submits the signup form
 app.post('/users', function (req, res) {
 
-  // grab user data from params (req.body)
-  var newUser = req.body;
-
   // create new user with secure password
-  User.createSecure(newUser.username, newUser.password, function (err, user) {
+  User.createSecure(req.body.username, req.body.password, function (err, user) {
+    req.login(user);
     res.send(user);
-    res.redirect('/profile');
   });
 });
 
 // user submits the login form
 app.post('/login', function (req, res) {
 
-  // grab user data from params (req.body)
-  var userData = req.body;
-
   // call authenticate function to check if password user entered is correct
-  User.authenticate(userData.username, userData.password, function (err, user) {
+  User.authenticate(req.body.username, req.body.password, function (err, user) {
     // saves user id to session
     req.login(user);
-
-    // redirect to user profile
-    res.redirect('/profile');
+    res.json(user);
   });
 });
 
@@ -217,9 +206,22 @@ app.post('/login', function (req, res) {
 app.get('/profile', function (req, res) {
   // finds user currently logged in
   req.currentUser(function (err, user) {
-    res.send('Welcome ' + user.username);
+    res.send('Welcome');
   });
 });
 
-// Add Mongo Lab to Heroku
+// log out user (destroy session)
+app.get('/logout', function (req, res) {
+  req.logout();
+  res.redirect('/');
+});
+
+// user submits the login form
+app.get('/users', function (req, res) {
+	User.find(function (err, foundUsers){
+	    res.json(foundUsers);
+	  });
+
+});
+
 app.listen(process.env.PORT || 3000);

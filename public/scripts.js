@@ -111,7 +111,7 @@ $(function() {
 		create: function(newScore) {
 			var scoreData = {score: newScore};
 			// send POST request to server to create new score
-			$.post('/api/comments', scoreData, function(data) {
+			$.post('/api/scores', scoreData, function(data) {
 				// pass post object through template and prepend to view
 				var $scoreHtml = $(scoreController.template(data));
 				$('#leaderboard-list').prepend($scoreHtml);
@@ -127,14 +127,125 @@ $(function() {
 
 	scoreController.setupView();
 
-	$("#signup-modal").on("submit", function(event) {
+	// jQuery Validate
+	$("#signup-form").validate({
+		rules: {
+			username: {
+				required: true,
+				minlength: 2
+			},
+			password: {
+				required: true,
+				minlength: 6
+			},
+			confirm_password: {
+				required: true,
+				minlength: 6,
+				equalTo: "#password"
+			}
+		},
+		messages: {
+			username: {
+				required: "Please enter a username",
+				minlength: "Your username must be at least two characters long"
+			},
+			password: {
+				required: "Please enter a password",
+				minlength: "Your password must be at least six characters long"
+			},
+			confirm_password: {
+				required: "Please confirm your password",
+				minlength: "Your password must be at least six characters long",
+				equalTo: "Please enter the same password as above"
+			}
+		}
+	});
+
+	$("#login-form").validate({
+		rules: {
+			username: {
+				required: true,
+				minlength: 2
+			},
+			password: {
+				required: true,
+				minlength: 6
+			}
+		},
+		messages: {
+			username: {
+				required: "Please enter a username",
+				minlength: "Your username must be at least two characters long"
+			},
+			password: {
+				required: "Please enter a password",
+				minlength: "Your password must be at least six characters long"
+			}
+		}
+	});
+
+	var loggedOut = function () {
+		$("#login-name").text("");
+		$("#signup-login").removeClass("hidden");
+		$("#logged-in").addClass("hidden");
+	}
+
+	var loggedIn = function () {
+		$("#signup-login").addClass("hidden");
+		$("#logged-in").removeClass("hidden");
+	}
+
+	$.ajax({
+		url: '/api/me',
+		type: "GET",
+		success: function (data) {
+			console.log("--> this should be the logded in user:");
+			console.log(data);
+			if (data) {
+				$("#login-name").text(data.username);
+				loggedIn();
+			} else {
+				loggedOut();
+			}
+		},
+		error: function () {
+			console.log("Error, could not GET username");
+		}
+	});
+
+	$("#login-form").on('submit', function (event) {
 		event.preventDefault();
-		var signUpData = {username: username, password: password}
-		$.post("/users", signUpData, function(data) {
-			// Hide login/sign up button
-			// Add username text and logout button
-		})
-	})
+		var loginUserObj = {
+			username: $("#username-login").val(),
+			password: $("#password-login").val()
+		}
+
+		$.ajax({
+			url: '/login',
+			type: "POST",
+			data: loginUserObj,
+			success: function (data) {
+				$("#login-name").text(data.username);
+				loggedIn();
+			},
+			error: function () {
+				console.log("Error, could not log in");
+			}
+		});
+	});
+
+	$("#logout-button").on('click', function (event) {
+		event.preventDefault();
+		$.ajax({
+			url: '/logout',
+			type: 'GET',
+			success: function (data) {
+				loggedOut();
+			},
+			error: function () {
+			}
+		});
+	});
 
 	// GAME CODE
 	var Q = Quintus()
@@ -160,6 +271,14 @@ $(function() {
 					coinsLabel.p.label = 'Coins: '+this.p.coins;
 				}
 			});
+			this.on("hit.sprite", function(collison) {
+				if(collison.obj.isA("Rocket")) {
+					this.destroy();
+					// Q.stageScene("level1");
+					// alert("Congrats, you won! Please leave a comment.");
+					Q.stageScene("winGame",1, { label: "You Won!" })
+				}
+			});
 		},
 		step: function(dt) {
 			if(Q.inputs["left"] && this.p.direction == "right") {
@@ -179,12 +298,12 @@ $(function() {
 
 				//will be invincible for 1 second
 				this.p.timeInvincible = 1;
-				if(this.p.lives<0) {
+				if(this.p.lives<0) { 
 					this.destroy();
 					Q.stageScene("endGame",1, { label: "Game Over" }); 
 				}
 				else {
-				//@TODO (yes, to you, who is reading now!) add an animation to show it"s been damaged
+				//TODO (yes, to you, who is reading now!) add an animation to show it's been damaged
 				var livesLabel = Q("UI.Text",1).first();
 				livesLabel.p.label = "Health: "+this.p.lives;
 				}
@@ -268,6 +387,12 @@ $(function() {
 		}
 	});
 
+	Q.Sprite.extend("Rocket", {
+		init: function(p) {
+			this._super(p, {asset: "rocket.png"});
+		}
+	});
+
 	//setup level 1
 	Q.scene("level1",function(stage) {
 		var background = new Q.TileLayer({dataAsset: "level1.tmx", layerIndex: 0, sheet: "tiles", tileW: 70, tileH: 70, type: Q.SPRITE_NONE });
@@ -297,16 +422,22 @@ $(function() {
 			["Coin", {x: 1160, y: 300}],
 			["Coin", {x: 1250, y: 400}],
 			["Coin", {x: 1310, y: 400}],
-			["Coin", {x: 1370, y: 400}]
+			["Coin", {x: 1370, y: 400}],
+			["Rocket", {x: 2000, y: 300}]
 		];
 
 		//load level assets
-		stage.loadAssets(levelAssets);  
+		stage.loadAssets(levelAssets); 
 		stage.add("viewport").follow(player,{x: true, y: true},{minX: 0, maxX: background.p.w, minY: 0, maxY: background.p.h});
 	});
 
 	Q.scene("endGame",function(stage) {
-		alert("game over");
+		alert("You Lose!");
+		window.location = "";
+	});
+
+	Q.scene("winGame",function(stage) {
+		alert("Congrats, you win! Please leave a comment.");
 		window.location = "";
 	});
 
@@ -329,23 +460,31 @@ $(function() {
 			y: 0
 		}),statsContainer);
 
-		var coins = stage.insert(new Q.UI.Text({
+		var coins = stage.insert(new Q.UI.Text({ 
 			label: "Coins: 0",
 			color: "white",
 			x: 0,
 			y: 0
 		}),statsContainer);
 
-		var timer = stage.insert(new Q.UI.Text({ 
-			label: "Seconds: 0",
+		var timer = stage.insert(new Q.UI.Text({
+			label: "Seconds: 1",
 			color: "white",
 			x: 300,
 			y: 0
 		}),statsContainer);
 	});
 
+	
+	var time = setInterval(runFunction,1000);
+	function runFunction() {
+		time++;
+		var timeLabel = Q("UI.Text",1).items[2];
+		timeLabel.p.label = 'Seconds: '+time;
+	};
+
 	//load assets
-	Q.load("tiles_map.png, player.png, slime.png, fly.png, level1.tmx, coin.png", function() {            
+	Q.load("tiles_map.png, player.png, slime.png, fly.png, level1.tmx, coin.png, rocket.png", function() {            
 		Q.sheet("tiles","tiles_map.png", { tilew: 70, tileh: 70});          
 		Q.stageScene("level1");
 		Q.stageScene("gameStats",1);
