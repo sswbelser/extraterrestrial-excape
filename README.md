@@ -10,6 +10,6 @@ At some point, I would like to get my leaderboard to work; automatically adding 
 This app is live on <a href="https://sbelser-platformer.herokuapp.com/">Heroku</a>.
 
 #HowToBootstrap
-```$ git clone```
-```$ npm install```
+```$ git clone```<br>
+```$ npm install```<br>
 ```$ node server.js```
