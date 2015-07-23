@@ -58,7 +58,7 @@ app.get("/api/comments/:id", function (req, res) {
 
 app.post("/api/comments", function (req, res) {
 	var newComment = new db.Comment({
-		// USERNAME
+		username: req.body.username,
 		comment: req.body.comment
 	});
 	newComment.save(function (err, savedComment) {

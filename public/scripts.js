@@ -9,9 +9,9 @@ $(function() {
 			$.get('/api/comments', function(data) {
 				var allComments = data;
 				// iterate through allComments
-				_.each(allComments, function(comment) {
+				_.each(allComments, function(username, comment) {
 					// pass each comment object through template and append to view
-					var $commentHtml = $(commentController.template(comment));
+					var $commentHtml = $(commentController.template(username, comment));
 					$('#comment-list').prepend($commentHtml);
 				});
 				// add event-handlers to comments for updating/deleting
@@ -19,14 +19,20 @@ $(function() {
 			});
 		},
 
-		create: function(newComment) {
-			var commentData = {comment: newComment};
+		create: function(newUsername, newComment) {
 			// send COMMENT request to server to create new comment
-			$.post('/api/comments', commentData, function(data) {
-				// pass post object through template and prepend to view
-				var $commentHtml = $(commentController.template(data));
-				$('#comment-list').prepend($commentHtml);
-			});
+			$.ajax({
+				type: 'POST',
+				url: '/api/comments',
+				data: {
+					username: newUsername,
+					comment: newComment
+				},
+				success: function(data) {
+					var $commentHtml = $(commentController.template(data));
+					$('#comment-list').prepend($commentHtml);
+				}
+			})
 		},
 
 		update: function(commentId, updatedComment) {
@@ -82,7 +88,8 @@ $(function() {
 			$('#new-comment').on('submit', function(event) {
 				event.preventDefault();
 				var commentText = $('#comment-text').val();
-				commentController.create(commentText);
+				var currentUser = $('#login-name').text();
+				commentController.create(currentUser, commentText);
 				// reset the form
 				$(this)[0].reset();
 			});
