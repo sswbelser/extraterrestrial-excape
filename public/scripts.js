@@ -107,9 +107,9 @@ $(function() {
 			$.get('/api/scores', function(data) {
 				var allScores = data;
 				// iterate through allScores
-				_.each(allScores, function(score) {
+				_.each(allScores, function(username, time) {
 					// pass each score object through template and append to view
-					var $scoreHtml = $(scoreController.template(score));
+					var $scoreHtml = $(scoreController.template(username, time));
 					$('#leaderboard-list').prepend($scoreHtml);
 				});
 			});
@@ -118,7 +118,7 @@ $(function() {
 		create: function(newUsername, newScore) {
 			$.ajax({
 				type: 'POST',
-				url: '/api/comments',
+				url: '/api/scores',
 				data: {
 					username: newUsername,
 					score: newScore
