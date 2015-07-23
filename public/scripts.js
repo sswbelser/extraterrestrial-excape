@@ -137,7 +137,6 @@ $(function() {
 			});
 		},
 
-
 		// Add functionality connecting the create function to the completion of the level
 		setupView: function() {
 			// append existing to view
