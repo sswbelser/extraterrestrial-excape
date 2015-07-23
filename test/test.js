@@ -5,7 +5,6 @@ var request = require("request"),
 	cheerio = require("cheerio");
 
 var baseUrl = "http://localhost:3000";
-var commentId;
 
 describe("Game Title", function() {
 	it("should be 'SBelser Platformer'", function(done) {
