@@ -46,7 +46,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-body">
-                                        <form id="signup-form" action="/users" method="POST">
+                                        <form id="signup-form">
                                             <input type="text" name="username" class="form-control" placeholder="Username - Whatever you like" id="username-signup" autofocus>
                                             <br>
                                             <input type="password" name="password" class="form-control" placeholder="Password - Minimum six characters" id="password">
@@ -66,7 +66,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-body">
-                                        <form id="login-form" method="POST" action="/login">
+                                        <form id="login-form">
                                             <input type="text" name="username" class="form-control" placeholder="Username" id="username-login" autofocus>
                                             <br>
                                             <input type="password" name="password" class="form-control" placeholder="Password" id="password-login" required>
@@ -160,7 +160,7 @@
         </div>
     </script>
     <script type="text/template" id="score-template">
-        <li class="col-sm-6" id="username-li">Username</li>
+        <li class="col-sm-6" id="username-li"><%= username %></li>
         <li class="col-sm-6" id="score-li"><%= time %></li>
     </script>
 

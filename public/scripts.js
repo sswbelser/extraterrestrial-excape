@@ -115,15 +115,41 @@ $(function() {
 			});
 		},
 
-		create: function(newScore) {
-			var scoreData = {score: newScore};
+		create: function(newUsername, newScore) {
+			$.ajax({
+				type: 'POST',
+				url: '/api/comments',
+				data: {
+					username: newUsername,
+					score: newScore
+				},
+				success: function(data) {
+					var $scoreHtml = $(scoreController.template(data));
+					$('#leaderboard-list').prepend($scoreHtml);
+				}
+			})
 			// send POST request to server to create new score
+			var scoreData = {score: newScore};
 			$.post('/api/scores', scoreData, function(data) {
 				// pass post object through template and prepend to view
 				var $scoreHtml = $(scoreController.template(data));
 				$('#leaderboard-list').prepend($scoreHtml);
 			});
 		},
+
+			// $.ajax({
+			// 	type: 'POST',
+			// 	url: '/api/comments',
+			// 	data: {
+			// 		username: newUsername,
+			// 		comment: newComment
+			// 	},
+			// 	success: function(data) {
+			// 		var $commentHtml = $(commentController.template(data));
+			// 		$('#comment-list').prepend($commentHtml);
+			// 	}
+			// })
+
 
 		// Add functionality connecting the create function to the completion of the level
 		setupView: function() {
@@ -220,6 +246,21 @@ $(function() {
 		}
 	});
 
+	function winner() {
+		newScoreObj = {
+			username: $("#login-name").text(),
+			time: time
+		}
+		$.ajax({
+			url: '/api/scores',
+			type: 'POST',
+			data: newScoreObj,
+			success: function (data) {
+				scoreController.create(newScoreObj)
+			}
+		})
+	}
+
 	$("#signup-form").on("submit", function (event) {
 		event.preventDefault();
 		var newUserObj = {
@@ -309,6 +350,7 @@ $(function() {
 					// Q.stageScene("level1");
 					// alert("Congrats, you won! Please leave a comment.");
 					Q.stageScene("winGame",1, { label: "You Won!" })
+					winner();
 				}
 			});
 		},

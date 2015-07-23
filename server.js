@@ -129,7 +129,7 @@ app.get("/api/scores/:id", function (req, res) {
 
 app.post("/api/scores", function (req, res) {
 	var newScore = new db.Score({
-		// USERNAME
+		username: req.body.username,
 		time: req.body.time
 	});
 	newScore.save(function (err, savedScore) {

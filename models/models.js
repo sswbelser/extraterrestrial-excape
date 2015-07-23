@@ -10,7 +10,7 @@ var CommentSchema = new Schema({
 
 var ScoreSchema = new Schema({
 	username: String,
-	score: Number
+	time: Number
 });
 
 var Comment = mongoose.model("Comment", CommentSchema),
