@@ -137,19 +137,6 @@ $(function() {
 			});
 		},
 
-			// $.ajax({
-			// 	type: 'POST',
-			// 	url: '/api/comments',
-			// 	data: {
-			// 		username: newUsername,
-			// 		comment: newComment
-			// 	},
-			// 	success: function(data) {
-			// 		var $commentHtml = $(commentController.template(data));
-			// 		$('#comment-list').prepend($commentHtml);
-			// 	}
-			// })
-
 
 		// Add functionality connecting the create function to the completion of the level
 		setupView: function() {
@@ -223,11 +210,15 @@ $(function() {
 		$("#login-name").text("");
 		$("#signup-login").removeClass("hidden");
 		$("#logged-in").addClass("hidden");
+		$("#comment-loggedin").addClass("hidden");
+		$("#comment-loggedout").removeClass("hidden");
 	}
 
 	var loggedIn = function () {
 		$("#signup-login").addClass("hidden");
 		$("#logged-in").removeClass("hidden");
+		$("#comment-loggedin").removeClass("hidden");
+		$("#comment-loggedout").addClass("hidden");
 	}
 
 	$.ajax({
@@ -268,6 +259,7 @@ $(function() {
 			password: $("#password").val()
 		}
 		$("#signup-modal").modal("hide");
+		window.location = "";
 		$.ajax({
 			url: "/api/users",
 			type: "POST",
@@ -290,6 +282,7 @@ $(function() {
 			password: $("#password-login").val()
 		}
 		$("#login-modal").modal("hide");
+		window.location = "";
 		$.ajax({
 			url: '/login',
 			type: "POST",
@@ -307,6 +300,7 @@ $(function() {
 
 	$("#logout-button").on('click', function (event) {
 		event.preventDefault();
+		window.location = "";
 		$.ajax({
 			url: '/logout',
 			type: 'GET',

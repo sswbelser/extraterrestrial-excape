@@ -19,6 +19,11 @@ body {
 	border: 1px solid black;
 }
 
+#please {
+	text-align: center;
+	color: red;
+}
+
 #add-a-comment {
 	text-align: center;
 }

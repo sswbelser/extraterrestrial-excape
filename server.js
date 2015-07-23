@@ -8,9 +8,9 @@ var express = require("express"),
 	mongoose = require("mongoose"),
 	cors = require("cors"),
 	session = require("express-session"),
-	db = require("./models/models"),
-	Comment = require("./models/models"),
-	User = require("./models/user")
+	Comment = require("./models/comment"),
+	User = require("./models/user"),
+	Score = require("./models/score")
 
 mongoose.connect(
 	process.env.MONGOLAB_URI ||
@@ -27,122 +27,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 // Open the API to requests from any domain
 app.use(cors());
 
-// show HTML file on main page
-app.get("/", function (req, res) {
-	res.sendFile(__dirname + "/public/index.html");
-});
-
-// AJAX functions for comments
-app.get("/api/comments", function (req, res) {
-	db.Comment.find(function (err, allComments) {
-		if (err) {
-			console.log("Error: " + err);
-			res.status(500).send(err);
-		} else {
-			res.json(allComments);
-		}
-	});
-});
-
-app.get("/api/comments/:id", function (req, res) {
-	var targetId = req.params.id;
-	db.Comment.findOne({_id: targetId}, function (err, foundComment) {
-		if (err) {
-			console.log("Error: " + err);
-			res.status(500).send(err);
-		} else {
-			res.json(foundComment);
-		}
-	});
-});
-
-app.post("/api/comments", function (req, res) {
-	var newComment = new db.Comment({
-		username: req.body.username,
-		comment: req.body.comment
-	});
-	newComment.save(function (err, savedComment) {
-		if (err) {
-			console.log("Error: " + err);
-			res.status(500).send(err);
-		} else {
-			res.json(savedComment);
-		}
-	});
-});
-
-app.put("/api/comments/:id", function (req, res) {
-	var targetId = req.params.id;
-	db.Comment.findOne({_id: targetId}, function (err, foundComment) {
-		if (err) {
-			console.log("Error: " + err);
-			res.status(500).send(err);
-		} else {
-			foundComment.comment = req.body.comment;
-			foundComment.save(function (err, savedComment) {
-				if (err) {
-					console.log("Error: " + err);
-					res.status(500).send(err);
-				} else {
-					res.json(savedComment);
-				}
-			})
-		}
-	})
-});
-
-app.delete("/api/comments/:id", function (req, res) {
-	var targetId = req.params.id;
-	db.Comment.findOneAndRemove({_id: targetId}, function (err, deletedComment) {
-		if (err) {
-			console.log("Error: " + err);
-			res.status(500).send(err);
-		} else {
-			res.json(deletedComment);
-		}
-	});
-});
-
-// AJAX functions for leaderboard
-app.get("/api/scores", function (req, res) {
-	db.Score.find(function (err, allScores) {
-		if (err) {
-			console.log("Error: " + err);
-			res.status(500).send(err);
-		} else {
-			res.json(allScores);
-		}
-	});
-});
-
-app.get("/api/scores/:id", function (req, res) {
-	var targetId = req.params.id;
-	db.Score.findOne({_id: targetId}, function (err, foundScore) {
-		if (err) {
-			console.log("Error: " + err);
-			res.status(500).send(err);
-		} else {
-			res.json(foundScore);
-		}
-	});
-});
-
-app.post("/api/scores", function (req, res) {
-	var newScore = new db.Score({
-		username: req.body.username,
-		time: req.body.time
-	});
-	newScore.save(function (err, savedScore) {
-		if (err) {
-			console.log("Error: " + err);
-			res.status(500).send(err);
-		} else {
-			res.json(savedScore);
-		}
-	});
-});
-
-// Login Stuff
 // set session options
 app.use(session({
 	saveUninitialized: true,
@@ -174,6 +58,136 @@ app.use('/', function (req, res, next) {
 	next();
 });
 
+// show HTML file on main page
+app.get("/", function (req, res) {
+	res.sendFile(__dirname + "/public/index.html");
+});
+
+// AJAX functions for comments
+app.get("/api/comments", function (req, res) {
+	Comment.find(function (err, allComments) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(allComments);
+		}
+	});
+});
+
+app.get("/api/comments/:id", function (req, res) {
+	var targetId = req.params.id;
+	Comment.findOne({_id: targetId}, function (err, foundComment) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(foundComment);
+		}
+	});
+});
+
+app.post("/api/comments", function (req, res) {
+	var newComment = new Comment({
+		username: req.body.username,
+		comment: req.body.comment
+	});
+	newComment.save(function (err, savedComment) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(savedComment);
+			User.findOne({_id: req.session.userId}).exec(function (err, foundUser) {
+				// add newList to `lists` array
+				foundUser.comments.push(newComment);
+			})
+		}
+	});
+});
+	
+		
+// });
+	// User.findOne({_id: req.session.userId}).exec(function (err, foundUser) {
+	// 	// add newList to `lists` array
+	// 	foundUser.comment.push(newComment);
+	// 	foundUser.save(function (err, savedComment) {
+	// 	});	
+	// });
+// });
+
+app.put("/api/comments/:id", function (req, res) {
+	var targetId = req.params.id;
+	Comment.findOne({_id: targetId}, function (err, foundComment) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			foundComment.comment = req.body.comment;
+			foundComment.save(function (err, savedComment) {
+				if (err) {
+					console.log("Error: " + err);
+					res.status(500).send(err);
+				} else {
+					res.json(savedComment);
+				}
+			})
+		}
+	})
+});
+
+app.delete("/api/comments/:id", function (req, res) {
+	var targetId = req.params.id;
+	Comment.findOneAndRemove({_id: targetId}, function (err, deletedComment) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(deletedComment);
+		}
+	});
+});
+
+// AJAX functions for leaderboard
+app.get("/api/scores", function (req, res) {
+	Score.find(function (err, allScores) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(allScores);
+		}
+	});
+});
+
+app.get("/api/scores/:id", function (req, res) {
+	var targetId = req.params.id;
+	Score.findOne({_id: targetId}, function (err, foundScore) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(foundScore);
+		}
+	});
+});
+
+app.post("/api/scores", function (req, res) {
+	var newScore = new Score({
+		username: req.body.username,
+		time: req.body.time
+	});
+	newScore.save(function (err, savedScore) {
+		if (err) {
+			console.log("Error: " + err);
+			res.status(500).send(err);
+		} else {
+			res.json(savedScore);
+		}
+	});
+});
+
+// Login Stuff
 app.get('/api/current', function (req, res) {
 	User.findOne({_id: req.session.userId}).exec(function (err, user) {
 		res.json(user);
@@ -200,14 +214,6 @@ app.post('/login', function (req, res) {
 		res.json(user);
 	});
 });
-
-// // user profile page
-// app.get('/profile', function (req, res) {
-// 	// finds user currently logged in
-// 	req.currentUser(function (err, user) {
-// 		res.send('Welcome');
-// 	});
-// });
 
 // log out user (destroy session)
 app.get('/logout', function (req, res) {
