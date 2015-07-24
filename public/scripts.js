@@ -41,6 +41,7 @@ $(function() {
 				type: 'PUT',
 				url: '/api/comments/' + commentId,
 				data: {
+					username: username,
 					comment: updatedComment
 				},
 				success: function(data) {
@@ -236,9 +237,9 @@ $(function() {
 		}
 	});
 
-	function winner() {
+	function winner(time) {
 		newScoreObj = {
-			username: $("#login-name").text(),
+			username: $('#login-name').text(),
 			time: time
 		}
 		$.ajax({
@@ -247,8 +248,9 @@ $(function() {
 			data: newScoreObj,
 			success: function (data) {
 				scoreController.create(newScoreObj)
+				console.log(newScoreObj)
 			}
-		})
+		});
 	}
 
 	$("#signup-form").on("submit", function (event) {
@@ -343,7 +345,7 @@ $(function() {
 					// Q.stageScene("level1");
 					// alert("Congrats, you won! Please leave a comment.");
 					Q.stageScene("winGame",1, { label: "You Won!" })
-					winner();
+					winner(time);
 				}
 			});
 		},

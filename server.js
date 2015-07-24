@@ -100,12 +100,9 @@ app.post("/api/comments", function (req, res) {
 			res.json(savedComment);
 			User.findOne({_id: req.session.userId}).exec(function (err, foundUser) {
 				// add newComment to `comments` array
-				console.log(foundUser.comments);
-				console.log(newComment);
 				foundUser.comments.push(newComment);
-				console.log(foundUser.comments);
-
-			})
+				foundUser.save();
+			});
 		}
 	});
 });

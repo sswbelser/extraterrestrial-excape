@@ -8,7 +8,7 @@ var mongoose = require("mongoose"),
 var UserSchema = new Schema({
 	username: String,
 	passwordDigest: String,
-	comments: [Comment]
+	comments: [Comment.schema]
 });
 
 // create a new user with secure (hashed) password
