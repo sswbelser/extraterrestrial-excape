@@ -267,14 +267,14 @@ $(function() {
 			this._super(p, {asset: "player.png", x: 110, y: 50, jumpSpeed: -400, lives: 3, coins: 0});
 			this.add("2d, platformerControls"); 
 			this.p.timeInvincible = 0;
-			this.on("hit.sprite",function(collision) {
-				if(collision.obj.isA("Coin")) {
-					collision.obj.destroy();
-					this.p.coins++;
-					var coinsLabel = Q("UI.Text",1).items[1];
-					coinsLabel.p.label = 'Coins: '+this.p.coins;
-				}
-			});
+			// this.on("hit.sprite",function(collision) {
+			// 	if(collision.obj.isA("Coin")) {
+			// 		collision.obj.destroy();
+			// 		this.p.coins++;
+			// 		var coinsLabel = Q("UI.Text",1).items[1];
+			// 		coinsLabel.p.label = 'Coins: '+this.p.coins;
+			// 	}
+			// });
 			this.on("hit.sprite", function(collison) {
 				if(collison.obj.isA("Rocket")) {
 					this.destroy();
@@ -305,7 +305,7 @@ $(function() {
 					Q.stageScene("endGame",1, { label: "Game Over" }); 
 				}
 				else {
-				//TODO (yes, to you, who is reading now!) add an animation to show it's been damaged
+				//TODO add an animation to show it's been damaged
 				var livesLabel = Q("UI.Text",1).first();
 				livesLabel.p.label = "Health: "+this.p.lives;
 				}
@@ -320,13 +320,14 @@ $(function() {
 			entity.on("bump.left,bump.right,bump.bottom", function(collision) {
 				if(collision.obj.isA("Player")) {                        
 					collision.obj.damage();
+					$(".hit-sound").trigger("play");
 				}
 			});
 			entity.on("bump.top", function(collision) {
 				if(collision.obj.isA("Player")) { 
 					//make the player jump
 					collision.obj.p.vy = -100;
-
+					$(".jump-sound").trigger("play");
 					//kill enemy
 					this.destroy();
 				}
@@ -336,7 +337,7 @@ $(function() {
 
 	Q.Sprite.extend("GroundEnemy", {
 		init: function(p) {
-			this._super(p, {vx: -100, defaultDirection: "left"});
+			this._super(p, {vx: -80, defaultDirection: "left"});
 			this.add("2d, aiBounce, commonEnemy");
 		},
 		step: function(dt) {        
@@ -386,11 +387,11 @@ $(function() {
 		}
 	});
 
-	Q.Sprite.extend("Coin", {
-		init: function(p) {
-			this._super(p, {asset: "coin.png"});
-		}
-	});
+	// Q.Sprite.extend("Coin", {
+	// 	init: function(p) {
+	// 		this._super(p, {asset: "coin.png"});
+	// 	}
+	// });
 
 	Q.Sprite.extend("Rocket", {
 		init: function(p) {
@@ -407,15 +408,34 @@ $(function() {
 
 		//level assets. format must be as shown: [[ClassName, params], .. ] 
 		var levelAssets = [
+			["VerticalEnemy", {x: 310, y: 250, rangeY: 100, asset: "fly.png"}],
 			["VerticalEnemy", {x: 450, y: 450, rangeY: 100, asset: "fly.png"}],
 			["VerticalEnemy", {x: 450, y: 120, rangeY: 60, asset: "fly.png"}],
+			["VerticalEnemy", {x: 740, y: 120, rangeY: 100, vy: 100, asset: "fly.png"}],
 			["VerticalEnemy", {x: 800, y: 120, rangeY: 100, asset: "fly.png"}],
-			["VerticalEnemy", {x: 1080, y: 120, rangeY: 80, asset: "fly.png"}],
+			["VerticalEnemy", {x: 1080, y: 120, rangeY: 90, asset: "fly.png"}],
+			["VerticalEnemy", {x: 1080, y: 500, rangeY: 80, asset: "fly.png"}],
+			["VerticalEnemy", {x: 1360, y: 500, rangeY: 80, vy: 100, asset: "fly.png"}],
+			["VerticalEnemy", {x: 1780, y: 480, rangeY: 100, asset: "fly.png"}],
+			["VerticalEnemy", {x: 1990, y: 250, rangeY: 50, asset: "fly.png"}],
+			["VerticalEnemy", {x: 1680, y: 250, rangeY: 50, asset: "fly.png"}],
+			["VerticalEnemy", {x: 1300, y: 120, rangeY: 100, asset: "fly.png"}],
+			["VerticalEnemy", {x: 2200, y: 100, rangeY: 60, asset: "fly.png"}],
 			["GroundEnemy", {x: 400, y: 600, asset: "slime.png"}],
+			["GroundEnemy", {x: 900, y: 120, asset: "slime.png"}],
+			["GroundEnemy", {x: 1000, y: 500, asset: "slime.png"}],
+			["GroundEnemy", {x: 1500, y: 500, vx: -10, asset: "slime.png"}],
+			["GroundEnemy", {x: 1700, y: 500, asset: "slime.png"}],
+			["GroundEnemy", {x: 1700, y: 250, vx: -10, asset: "slime.png"}],
+			["GroundEnemy", {x: 2200, y: 400, asset: "slime.png"}],
+			["GroundEnemy", {x: 2400, y: 350, vx: -10, asset: "slime.png"}],
+			["GroundEnemy", {x: 1350, y: 150, vx: -10, asset: "slime.png"}],
+			["GroundEnemy", {x: 1700, y: 100, vx: -10, asset: "slime.png"}],
+			["GroundEnemy", {x: 2120, y: 100, vx: -10, asset: "slime.png"}],
+			["GroundEnemy", {x: 2550, y: 100, vx: -10, asset: "slime.png"}],
 			["GroundEnemy", {x: 450, y: 600, asset: "slime.png"}],
 			["GroundEnemy", {x: 1000, y: 600, asset: "slime.png"}],
 			["GroundEnemy", {x: 2000, y: 600, asset: "slime.png"}],
-			["GroundEnemy", {x: 1260, y: 120, asset: "slime.png"}],
 			["GroundEnemy", {x: 800, y: 500, asset: "slime.png"}],
 			// ["Coin", {x: 300, y: 100}],
 			// ["Coin", {x: 360, y: 100}],
@@ -445,7 +465,9 @@ $(function() {
 	});
 
 	Q.scene("winGame",function(stage) {
-		alert("Congrats, you win! Please leave a comment.");
+		$(".fanfare-song").trigger("play");
+		$(".main-song").trigger("pause");
+		alert("Congrats, you won in " + time + " seconds! Please leave a comment.");
 		window.location = "";
 	});
 
