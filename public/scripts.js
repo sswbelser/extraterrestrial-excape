@@ -99,54 +99,6 @@ $(function() {
 
 	commentController.setupView();
 
-	var scoreController = {
-
-		// compile score template
-		template: _.template($('#score-template').html()),
-
-		all: function() {
-			$.get('/api/scores', function(data) {
-				var allScores = data;
-				// iterate through allScores
-				_.each(allScores, function(username, time) {
-					// pass each score object through template and append to view
-					var $scoreHtml = $(scoreController.template(username, time));
-					$('#leaderboard-list').prepend($scoreHtml);
-				});
-			});
-		},
-
-		create: function(newUsername, newScore) {
-			$.ajax({
-				type: 'POST',
-				url: '/api/scores',
-				data: {
-					username: newUsername,
-					score: newScore
-				},
-				success: function(data) {
-					var $scoreHtml = $(scoreController.template(data));
-					$('#leaderboard-list').prepend($scoreHtml);
-				}
-			})
-			// send POST request to server to create new score
-			var scoreData = {score: newScore};
-			$.post('/api/scores', scoreData, function(data) {
-				// pass post object through template and prepend to view
-				var $scoreHtml = $(scoreController.template(data));
-				$('#leaderboard-list').prepend($scoreHtml);
-			});
-		},
-
-		// Add functionality connecting the create function to the completion of the level
-		setupView: function() {
-			// append existing to view
-			scoreController.all();
-		}
-	};
-
-	scoreController.setupView();
-
 	// jQuery Validate
 	$("#signup-form").validate({
 		rules: {
@@ -237,22 +189,6 @@ $(function() {
 		}
 	});
 
-	function winner(time) {
-		newScoreObj = {
-			username: $('#login-name').text(),
-			time: time
-		}
-		$.ajax({
-			url: '/api/scores',
-			type: 'POST',
-			data: newScoreObj,
-			success: function (data) {
-				scoreController.create(newScoreObj)
-				console.log(newScoreObj)
-			}
-		});
-	}
-
 	$("#signup-form").on("submit", function (event) {
 		event.preventDefault();
 		var newUserObj = {
@@ -342,10 +278,7 @@ $(function() {
 			this.on("hit.sprite", function(collison) {
 				if(collison.obj.isA("Rocket")) {
 					this.destroy();
-					// Q.stageScene("level1");
-					// alert("Congrats, you won! Please leave a comment.");
 					Q.stageScene("winGame",1, { label: "You Won!" })
-					winner(time);
 				}
 			});
 		},
@@ -443,9 +376,12 @@ $(function() {
 		step: function(dt) {                
 			if(this.p.y - this.p.initialY >= this.p.rangeY && this.p.vy > 0) {
 				this.p.vy = -this.p.vy;
-			}
+			} 
 			else if(-this.p.y + this.p.initialY >= this.p.rangeY && this.p.vy < 0) {
 				this.p.vy = -this.p.vy;
+			}
+			else if(this.p.vy == 0) {
+				this.p.vy = -100;
 			}
 		}
 	});
@@ -471,28 +407,31 @@ $(function() {
 
 		//level assets. format must be as shown: [[ClassName, params], .. ] 
 		var levelAssets = [
-			["GroundEnemy", {x: 18*70, y: 6*70, asset: "slime.png"}],
-			["VerticalEnemy", {x: 800, y: 120, rangeY: 70, asset: "fly.png"}],
+			["VerticalEnemy", {x: 450, y: 450, rangeY: 100, asset: "fly.png"}],
+			["VerticalEnemy", {x: 450, y: 120, rangeY: 60, asset: "fly.png"}],
+			["VerticalEnemy", {x: 800, y: 120, rangeY: 100, asset: "fly.png"}],
 			["VerticalEnemy", {x: 1080, y: 120, rangeY: 80, asset: "fly.png"}],
-			["GroundEnemy", {x: 6*70, y: 3*70, asset: "slime.png"}],
-			["GroundEnemy", {x: 8*70, y: 70, asset: "slime.png"}],
-			["GroundEnemy", {x: 18*70, y: 120, asset: "slime.png"}],
-			["GroundEnemy", {x: 12*70, y: 120, asset: "slime.png"}],
-			["Coin", {x: 300, y: 100}],
-			["Coin", {x: 360, y: 100}],
-			["Coin", {x: 420, y: 100}],
-			["Coin", {x: 480, y: 100}],
-			["Coin", {x: 800, y: 300}],
-			["Coin", {x: 860, y: 300}],
-			["Coin", {x: 920, y: 300}],
-			["Coin", {x: 980, y: 300}],
-			["Coin", {x: 1040, y: 300}],
-			["Coin", {x: 1100, y: 300}],
-			["Coin", {x: 1160, y: 300}],
-			["Coin", {x: 1250, y: 400}],
-			["Coin", {x: 1310, y: 400}],
-			["Coin", {x: 1370, y: 400}],
-			["Rocket", {x: 2000, y: 300}]
+			["GroundEnemy", {x: 400, y: 600, asset: "slime.png"}],
+			["GroundEnemy", {x: 450, y: 600, asset: "slime.png"}],
+			["GroundEnemy", {x: 1000, y: 600, asset: "slime.png"}],
+			["GroundEnemy", {x: 2000, y: 600, asset: "slime.png"}],
+			["GroundEnemy", {x: 1260, y: 120, asset: "slime.png"}],
+			["GroundEnemy", {x: 800, y: 500, asset: "slime.png"}],
+			// ["Coin", {x: 300, y: 100}],
+			// ["Coin", {x: 360, y: 100}],
+			// ["Coin", {x: 420, y: 100}],
+			// ["Coin", {x: 480, y: 100}],
+			// ["Coin", {x: 800, y: 300}],
+			// ["Coin", {x: 860, y: 300}],
+			// ["Coin", {x: 920, y: 300}],
+			// ["Coin", {x: 980, y: 300}],
+			// ["Coin", {x: 1040, y: 300}],
+			// ["Coin", {x: 1100, y: 300}],
+			// ["Coin", {x: 1160, y: 300}],
+			// ["Coin", {x: 1250, y: 400}],
+			// ["Coin", {x: 1310, y: 400}],
+			// ["Coin", {x: 1370, y: 400}],
+			["Rocket", {x: 2700, y: 600}]
 		];
 
 		//load level assets
@@ -529,12 +468,12 @@ $(function() {
 			y: 0
 		}),statsContainer);
 
-		var coins = stage.insert(new Q.UI.Text({ 
-			label: "Coins: 0",
-			color: "white",
-			x: 0,
-			y: 0
-		}),statsContainer);
+		// var coins = stage.insert(new Q.UI.Text({ 
+		// 	label: "Coins: 0",
+		// 	color: "white",
+		// 	x: 0,
+		// 	y: 0
+		// }),statsContainer);
 
 		var timer = stage.insert(new Q.UI.Text({
 			label: "Seconds: 1",
@@ -548,7 +487,7 @@ $(function() {
 	var time = setInterval(runFunction,1000);
 	function runFunction() {
 		time++;
-		var timeLabel = Q("UI.Text",1).items[2];
+		var timeLabel = Q("UI.Text",1).items[1];
 		timeLabel.p.label = 'Seconds: '+time;
 	};
 
