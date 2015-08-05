@@ -56,20 +56,3 @@ body {
 #modal-buttons {
 	text-align: center;
 }
-
-ol {
-    counter-reset: index;
-}
-
-ol li:nth-child(2n+0) {
-    counter-increment: index;
-    list-style: none;
-}
-
-ol li:nth-child(2n+0):before {
-    content: counter(index) ".";
-}
-
-ol li:nth-child(2n+0):before {
-    content: "";
-}
