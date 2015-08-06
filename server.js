@@ -1,4 +1,4 @@
-// SERVER NODE.JS
+// Server Node.js
 
 // require express framework and additional modules
 var express = require("express"),
