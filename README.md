@@ -5,7 +5,7 @@ Basic platformer game using Quintus.  Project 1 for GA WDI.  Includes user authe
 At some point, I would like to get a leaderboard to work; automatically adding the username, time, and coins to the database, mergesorting, and appending the top 10 times/scores to the leaderboard.
 
 #Live
-This app is live on <a href="https://sbelser-platformer.herokuapp.com/">Heroku</a>.
+This app is live on <a href="https://extraterrestrial-excape.herokuapp.com/">Heroku</a>.
 
 #How To Bootstrap
 ```$ git clone```<br>
