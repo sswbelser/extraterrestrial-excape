@@ -1,5 +1,3 @@
-#Read Me
-
 #Description
 Basic platformer game using Quintus.  Project 1 for GA WDI.  Includes user authentication, jQuery Validation, and various node modules. Functionality includes comments based on user.
 
