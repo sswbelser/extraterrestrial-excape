@@ -1,5 +1,19 @@
+@font-face {
+    font-family: 'intro_script_rh2_base';
+    src: url('introscriptr-h2base-webfont.eot');
+    src: url('introscriptr-h2base-webfont.eot?#iefix') format('embedded-opentype'),
+         url('introscriptr-h2base-webfont.woff2') format('woff2'),
+         url('introscriptr-h2base-webfont.woff') format('woff'),
+         url('introscriptr-h2base-webfont.ttf') format('truetype'),
+         url('introscriptr-h2base-webfont.svg#intro_script_rh2_base') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
 	padding-top: 51px;
+	background-image: url('./images/background.png');
+	font-family: 'intro_script_rh2_base'
 }
 
 .hidden {
@@ -10,13 +24,14 @@ body {
 	text-shadow: 1px 1px #FF0000;
 }
 
-#navbar-right {
-	float: right;
-}
-
 #quintus {
 	padding: 1px;
 	border: 1px solid black;
+}
+
+#navbar-image {
+	height: 25px;
+	margin-left: 10px;
 }
 
 #please {
@@ -28,8 +43,16 @@ body {
 	text-align: center;
 }
 
+#comment-text {
+	outline: 1px solid black;
+}
+
 #post-comment-button {
 	text-align: center;
+}
+
+.comment {
+	outline: 1px solid black;
 }
 
 #comment-p {
@@ -44,15 +67,30 @@ body {
 	text-align: center;
 }
 
-#top-10-title {
+.modal-buttons {
+	margin: 0 auto;
+	text-align: center;
+}
+
+#signup-button {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+#logout-button {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+#details-dropdown {
+	margin-right: 10px;
+}
+
+/*#top-10-title {
 	text-align: center;
 }
 
 #score-li {
 	text-align: right;
 	list-style-type: none;
-}
-
-#modal-buttons {
-	text-align: center;
-}
+}*/

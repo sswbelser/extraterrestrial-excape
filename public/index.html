@@ -23,13 +23,22 @@
 
     <!-- Navbar - fixed to top -->
     <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
             <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-right" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand"><img src="./images/player.png" id="navbar-image"></a>
+                <a class="navbar-brand">Extraterrestrial Excape</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-right">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Website Details<span class="caret"></span></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="details-dropdown">Website Details<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li style="text-align: center"><a href="http://www.sswbelser.com">Made by Sabastian Belser</a></li>
+                            <li><a href="http://www.sswbelser.com">Made by SSWBelser</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="https://github.com/sswbelser">GitHub</a></li>
                             <li><a href="https://twitter.com/sswbelser">Twitter</a></li>
@@ -39,58 +48,53 @@
                         </ul>
                     </li>
                 </ul>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar-right">
                 <div id="signup-login" class="hidden">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a data-toggle="modal" data-target="#signup-modal">Sign Up</a>
-                        <div class="modal fade" id="signup-modal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <form id="signup-form">
-                                            <input type="text" name="username" class="form-control" placeholder="Username - Whatever you like" id="username-signup" autofocus>
-                                            <br>
-                                            <input type="password" name="password" class="form-control" placeholder="Password - Minimum six characters" id="password">
-                                            <br>
-                                            <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password" id="confirm_password">
-                                            <hr>
-                                            <input type="submit" value="Sign Up" class="btn btn-success">
-                                        </form>
-                                    </div>
+                    <a class="btn navbar-btn navbar-right btn-primary" data-toggle="modal" data-target="#signup-modal" id="signup-button">Sign Up</a>
+                    <a class="btn navbar-btn navbar-right btn-primary" data-toggle="modal" data-target="#login-modal">Login</a>
+                    <div class="modal fade" id="signup-modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <form id="signup-form">
+                                        <input type="text" name="username" class="form-control" placeholder="Username - Whatever you like" id="username-signup" autofocus>
+                                        <br>
+                                        <input type="password" name="password" class="form-control" placeholder="Password - Minimum six characters" id="password">
+                                        <br>
+                                        <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password" id="confirm_password">
+                                        <hr>
+                                        <div class="modal-buttons">
+                                            <input type="submit" value="Sign Up" class="btn btn-primary">
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </li>
-                    <li>
-                        <a data-toggle="modal" data-target="#login-modal">Login</a>
-                        <div class="modal fade" id="login-modal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <form id="login-form">
-                                            <input type="text" name="username" class="form-control" placeholder="Username" id="username-login" autofocus>
-                                            <br>
-                                            <input type="password" name="password" class="form-control" placeholder="Password" id="password-login" required>
-                                            <hr>
-                                            <input type="submit" value="Login" class="btn btn-success" id="modal-buttons">
-                                        </form>
-                                    </div>
+                    </div>
+                    <div class="modal fade" id="login-modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <form id="login-form">
+                                        <input type="text" name="username" class="form-control" placeholder="Username" id="username-login" autofocus>
+                                        <br>
+                                        <input type="password" name="password" class="form-control" placeholder="Password" id="password-login" required>
+                                        <hr>
+                                        <div class="modal-buttons">
+                                            <input type="submit" value="Login" class="btn btn-primary">
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </li>
-                </ul>
+                    </div>
                 </div>
                 <div id="logged-in" class="hidden">
+                    <a class="btn navbar-btn navbar-right btn-danger" id="logout-button">Logout</a>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a><h7 id="login-name"></h7></a></li>
-                        <li><a class="logout" id="logout-button">Logout</a></li>
+                        <li><a class="navbar-right"><h7 id="login-name"></h7></a></li>
                     </ul>
                 </div>
             </div>
-        </div>
     </nav>
 
     <div id="quintus_container" style="width: 960px; margin: 0px auto; position: relative;">
@@ -126,7 +130,7 @@
             </form>
         </div>
         <div id="comment-loggedout" class="hidden">
-            <div class="panel panel-default">
+            <div class="comment panel panel-default">
                 <div class="panel-body">
                     <p id="please">Please log in to add comments</p>
                 </div>
